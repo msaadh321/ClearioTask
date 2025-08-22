@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MyTodo Diary</title>
+    <title>Mytodo Diary</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -15,6 +15,7 @@
             --border-radius: 16px;
             --font-family: 'Segoe UI', Roboto, sans-serif;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
         }
 
         .dark-theme {
@@ -35,11 +36,19 @@
             --font-family: 'Helvetica Neue', Arial, sans-serif;
         }
 
+        .rounded-font {
+            --font-family: 'Nunito', 'Segoe UI', sans-serif;
+        }
+
+        .elegant-font {
+            --font-family: 'Playfair Display', Georgia, serif;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s;
+            transition: var(--transition);
         }
 
         body {
@@ -251,6 +260,7 @@
             gap: 4px;
             color: #888;
             font-size: 12px;
+            cursor: pointer;
         }
 
         .nav-item.active {
@@ -291,6 +301,8 @@
             box-shadow: var(--shadow);
             transform: translateY(20px);
             transition: transform 0.3s;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .modal.active .modal-content {
@@ -321,6 +333,11 @@
             height: 24px;
             border-radius: 50%;
             cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .theme-option.active {
+            border-color: var(--text-color);
         }
 
         .theme-default {
@@ -340,6 +357,13 @@
             border-radius: 6px;
             border: 1px solid #ddd;
             cursor: pointer;
+            font-size: 14px;
+        }
+
+        .font-option.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
 
         .ai-suggestion {
@@ -375,10 +399,90 @@
             z-index: 1000;
             opacity: 0;
             transition: opacity 0.3s;
+            pointer-events: none;
         }
 
         .notification.show {
             opacity: 1;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .calendar-view, .add-view, .reminders-view, .profile-view {
+            display: none;
+        }
+
+        .view-active {
+            display: block;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #888;
         }
 
         @media (max-width: 480px) {
@@ -397,7 +501,7 @@
         <div class="header">
             <div class="logo-container">
                 <div class="logo">MD</div>
-                <div class="app-name">MyTodo Diary</div>
+                <div class="app-name">Mytodo Diary</div>
             </div>
             <button class="settings-btn" id="settingsBtn">
                 <i class="fas fa-cog"></i>
@@ -405,48 +509,131 @@
         </div>
 
         <div class="main-content">
-            <div class="date-display" id="currentDate">Monday, September 12</div>
-            
-            <div class="add-task-container">
-                <input type="text" class="task-input" id="taskInput" placeholder="Add a new task...">
-                <div class="datetime-container">
-                    <input type="date" class="date-input" id="taskDate">
-                    <input type="time" class="time-input" id="taskTime">
+            <!-- Home View -->
+            <div class="home-view view-active">
+                <div class="date-display" id="currentDate">Monday, September 12</div>
+                
+                <div class="add-task-container">
+                    <input type="text" class="task-input" id="taskInput" placeholder="Add a new task...">
+                    <div class="datetime-container">
+                        <input type="date" class="date-input" id="taskDate">
+                        <input type="time" class="time-input" id="taskTime">
+                    </div>
+                    <button class="add-task-btn" id="addTaskBtn">Add Task</button>
                 </div>
-                <button class="add-task-btn" id="addTaskBtn">Add Task</button>
-            </div>
-            
-            <div class="tasks-container">
-                <h2 class="section-title"><i class="fas fa-tasks"></i> My Tasks</h2>
-                <div class="task-list" id="taskList">
-                    <!-- Tasks will be added here dynamically -->
+                
+                <div class="tasks-container">
+                    <h2 class="section-title"><i class="fas fa-tasks"></i> My Tasks</h2>
+                    <div class="task-list" id="taskList">
+                        <!-- Tasks will be added here dynamically -->
+                    </div>
+                </div>
+                
+                <div class="ai-suggestion" id="aiSuggestion">
+                    <strong><i class="fas fa-robot"></i> AI Suggestion:</strong> 
+                    <span id="suggestionText">Try breaking large tasks into smaller, manageable steps.</span>
                 </div>
             </div>
-            
-            <div class="ai-suggestion" id="aiSuggestion">
-                <strong><i class="fas fa-robot"></i> AI Suggestion:</strong> 
-                <span id="suggestionText">Try breaking large tasks into smaller, manageable steps.</span>
+
+            <!-- Calendar View -->
+            <div class="calendar-view">
+                <h2 class="section-title"><i class="fas fa-calendar"></i> Task Calendar</h2>
+                <div class="date-display" id="calendarDate">September 2023</div>
+                <div class="tasks-container">
+                    <div class="task-list" id="calendarTaskList">
+                        <!-- Calendar tasks will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add View -->
+            <div class="add-view">
+                <h2 class="section-title"><i class="fas fa-plus-circle"></i> Quick Add</h2>
+                <div class="add-task-container">
+                    <input type="text" class="task-input" id="quickTaskInput" placeholder="Add a new task...">
+                    <button class="add-task-btn" id="quickAddTaskBtn">Add Task</button>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalTasks">0</div>
+                        <div class="stat-label">Total Tasks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="completedTasks">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pendingTasks">0</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="overdueTasks">0</div>
+                        <div class="stat-label">Overdue</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reminders View -->
+            <div class="reminders-view">
+                <h2 class="section-title"><i class="fas fa-bell"></i> Reminders</h2>
+                <div class="tasks-container">
+                    <div class="task-list" id="remindersList">
+                        <!-- Reminders will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile View -->
+            <div class="profile-view">
+                <h2 class="section-title"><i class="fas fa-user"></i> Profile</h2>
+                <div class="add-task-container">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <div class="logo" style="width: 60px; height: 60px; margin: 0 auto;">
+                            <i class="fas fa-user" style="font-size: 24px;"></i>
+                        </div>
+                        <h3 style="margin-top: 12px;">User Profile</h3>
+                        <p style="color: #888; margin-top: 4px;">Todo Enthusiast</p>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <span>Account Settings</span>
+                        <button class="task-action-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="setting-item">
+                        <span>Notification Preferences</span>
+                        <button class="task-action-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="setting-item">
+                        <span>Data Backup</span>
+                        <button class="task-action-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="setting-item">
+                        <span>Help & Support</span>
+                        <button class="task-action-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="bottom-nav">
-            <div class="nav-item active">
+            <div class="nav-item active" data-view="home-view">
                 <i class="fas fa-home nav-icon"></i>
                 <span>Home</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" data-view="calendar-view">
                 <i class="fas fa-calendar nav-icon"></i>
                 <span>Calendar</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" data-view="add-view">
                 <i class="fas fa-plus-circle nav-icon"></i>
-                <span>Add</span>
+                <span>Stats</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" data-view="reminders-view">
                 <i class="fas fa-bell nav-icon"></i>
                 <span>Reminders</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" data-view="profile-view">
                 <i class="fas fa-user nav-icon"></i>
                 <span>Profile</span>
             </div>
@@ -462,7 +649,7 @@
             <div class="setting-item">
                 <span>Theme</span>
                 <div class="setting-options">
-                    <div class="theme-option theme-default" data-theme="default"></div>
+                    <div class="theme-option theme-default active" data-theme="default"></div>
                     <div class="theme-option theme-dark" data-theme="dark"></div>
                     <div class="theme-option theme-minimal" data-theme="minimal"></div>
                 </div>
@@ -471,7 +658,7 @@
             <div class="setting-item">
                 <span>Font Style</span>
                 <div class="setting-options">
-                    <div class="font-option" data-font="default">Default</div>
+                    <div class="font-option active" data-font="default">Default</div>
                     <div class="font-option" data-font="rounded">Rounded</div>
                     <div class="font-option" data-font="elegant">Elegant</div>
                 </div>
@@ -522,6 +709,8 @@
             const notification = document.getElementById('notification');
             const aiSuggestion = document.getElementById('aiSuggestion');
             const suggestionText = document.getElementById('suggestionText');
+            const navItems = document.querySelectorAll('.nav-item');
+            const views = document.querySelectorAll('.main-content > div');
             
             // Set current date
             const now = new Date();
@@ -538,21 +727,66 @@
             
             // Sample tasks
             const sampleTasks = [
-                { title: 'Complete project proposal', date: '2023-09-15', time: '14:00', completed: false },
-                { title: 'Buy groceries', date: '2023-09-13', time: '10:30', completed: false },
-                { title: 'Call mom', date: '2023-09-12', time: '19:00', completed: true }
+                { 
+                    id: 1,
+                    title: 'Complete project proposal', 
+                    date: '2023-09-15', 
+                    time: '14:00', 
+                    completed: false,
+                    reminder: true
+                },
+                { 
+                    id: 2,
+                    title: 'Buy groceries', 
+                    date: '2023-09-13', 
+                    time: '10:30', 
+                    completed: false,
+                    reminder: true
+                },
+                { 
+                    id: 3,
+                    title: 'Call mom', 
+                    date: '2023-09-12', 
+                    time: '19:00', 
+                    completed: true,
+                    reminder: false
+                }
             ];
             
             // Load tasks from localStorage or use sample tasks
             let tasks = JSON.parse(localStorage.getItem('tasks')) || sampleTasks;
             
+            // Initialize the app
+            function initApp() {
+                renderTasks();
+                updateStats();
+                setupNavigation();
+                loadSettings();
+                
+                // Request notification permission
+                if ('Notification' in window && Notification.permission === 'default') {
+                    Notification.requestPermission();
+                }
+            }
+            
             // Render tasks
             function renderTasks() {
                 taskList.innerHTML = '';
                 
+                if (tasks.length === 0) {
+                    taskList.innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: #888;">
+                            <i class="fas fa-check-circle" style="font-size: 48px; margin-bottom: 16px;"></i>
+                            <p>No tasks yet. Add a new task to get started!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
                 tasks.forEach((task, index) => {
                     const taskItem = document.createElement('div');
                     taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
+                    taskItem.dataset.id = task.id;
                     
                     const taskDateObj = new Date(task.date);
                     const formattedDate = taskDateObj.toLocaleDateString('en-US', { 
@@ -568,17 +802,20 @@
                             <div class="task-datetime">${formattedDate} at ${task.time}</div>
                         </div>
                         <div class="task-actions">
-                            <button class="task-action-btn"><i class="fas fa-edit"></i></button>
-                            <button class="task-action-btn"><i class="fas fa-trash"></i></button>
+                            <button class="task-action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                            <button class="task-action-btn delete-btn"><i class="fas fa-trash"></i></button>
                         </div>
                     `;
                     
                     // Add event listeners
                     const checkbox = taskItem.querySelector('.task-checkbox');
-                    checkbox.addEventListener('change', () => toggleTaskCompleted(index));
+                    checkbox.addEventListener('change', () => toggleTaskCompleted(task.id));
                     
-                    const deleteBtn = taskItem.querySelectorAll('.task-action-btn')[1];
-                    deleteBtn.addEventListener('click', () => deleteTask(index));
+                    const deleteBtn = taskItem.querySelector('.delete-btn');
+                    deleteBtn.addEventListener('click', () => deleteTask(task.id));
+                    
+                    const editBtn = taskItem.querySelector('.edit-btn');
+                    editBtn.addEventListener('click', () => editTask(task.id));
                     
                     taskList.appendChild(taskItem);
                 });
@@ -599,15 +836,18 @@
                 }
                 
                 const newTask = {
+                    id: Date.now(),
                     title,
                     date,
                     time,
-                    completed: false
+                    completed: false,
+                    reminder: true
                 };
                 
                 tasks.push(newTask);
                 saveTasks();
                 renderTasks();
+                updateStats();
                 
                 taskInput.value = '';
                 showNotification('Task added successfully!');
@@ -617,18 +857,45 @@
             }
             
             // Toggle task completed status
-            function toggleTaskCompleted(index) {
-                tasks[index].completed = !tasks[index].completed;
-                saveTasks();
-                renderTasks();
+            function toggleTaskCompleted(taskId) {
+                const taskIndex = tasks.findIndex(task => task.id === taskId);
+                if (taskIndex !== -1) {
+                    tasks[taskIndex].completed = !tasks[taskIndex].completed;
+                    saveTasks();
+                    renderTasks();
+                    updateStats();
+                    
+                    if (tasks[taskIndex].completed) {
+                        showNotification('Task completed!');
+                    }
+                }
             }
             
             // Delete task
-            function deleteTask(index) {
-                tasks.splice(index, 1);
+            function deleteTask(taskId) {
+                tasks = tasks.filter(task => task.id !== taskId);
                 saveTasks();
                 renderTasks();
+                updateStats();
                 showNotification('Task deleted');
+            }
+            
+            // Edit task
+            function editTask(taskId) {
+                const task = tasks.find(task => task.id === taskId);
+                if (task) {
+                    taskInput.value = task.title;
+                    taskDate.value = task.date;
+                    taskTime.value = task.time;
+                    
+                    // Remove the task and update UI
+                    tasks = tasks.filter(t => t.id !== taskId);
+                    saveTasks();
+                    renderTasks();
+                    updateStats();
+                    
+                    showNotification('Edit your task below');
+                }
             }
             
             // Save tasks to localStorage
@@ -650,6 +917,11 @@
                 setTimeout(() => {
                     notification.className = 'notification';
                 }, 3000);
+                
+                // Vibrate if enabled
+                if (navigator.vibrate && document.getElementById('vibrationToggle').checked) {
+                    navigator.vibrate(200);
+                }
             }
             
             // Schedule notification
@@ -658,7 +930,7 @@
                     return;
                 }
                 
-                if (Notification.permission === 'granted') {
+                if (Notification.permission === 'granted' && document.getElementById('notificationsToggle').checked) {
                     const taskDateTime = new Date(`${task.date}T${task.time}`);
                     const now = new Date();
                     
@@ -667,10 +939,12 @@
                         const timeUntilNotification = taskDateTime - now;
                         
                         setTimeout(() => {
-                            new Notification('MyTodo Diary Reminder', {
+                            new Notification('Mytodo Diary Reminder', {
                                 body: `Reminder: ${task.title}`,
                                 icon: 'https://example.com/icon.png' // In a real app, use a real URL
                             });
+                            
+                            showNotification(`Reminder: ${task.title}`);
                         }, timeUntilNotification);
                     }
                 } else if (Notification.permission !== 'denied') {
@@ -684,6 +958,12 @@
             
             // Update AI suggestion
             function updateAISuggestion() {
+                if (!document.getElementById('aiToggle').checked) {
+                    aiSuggestion.style.display = 'none';
+                    return;
+                }
+                
+                aiSuggestion.style.display = 'block';
                 const pendingTasks = tasks.filter(task => !task.completed).length;
                 const completedTasks = tasks.filter(task => task.completed).length;
                 
@@ -712,6 +992,75 @@
                 suggestionText.textContent = suggestion;
             }
             
+            // Update stats
+            function updateStats() {
+                const totalTasks = tasks.length;
+                const completedTasks = tasks.filter(task => task.completed).length;
+                const pendingTasks = totalTasks - completedTasks;
+                
+                // Simple overdue calculation
+                const today = new Date().toISOString().split('T')[0];
+                const overdueTasks = tasks.filter(task => !task.completed && task.date < today).length;
+                
+                document.getElementById('totalTasks').textContent = totalTasks;
+                document.getElementById('completedTasks').textContent = completedTasks;
+                document.getElementById('pendingTasks').textContent = pendingTasks;
+                document.getElementById('overdueTasks').textContent = overdueTasks;
+            }
+            
+            // Setup navigation
+            function setupNavigation() {
+                navItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        const viewName = this.dataset.view;
+                        
+                        // Update active nav item
+                        navItems.forEach(nav => nav.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Show the corresponding view
+                        views.forEach(view => view.classList.remove('view-active'));
+                        document.querySelector(`.${viewName}`).classList.add('view-active');
+                    });
+                });
+            }
+            
+            // Load settings
+            function loadSettings() {
+                // Load theme
+                const savedTheme = localStorage.getItem('theme') || 'default';
+                document.body.className = `${savedTheme}-theme`;
+                
+                // Set active theme option
+                document.querySelectorAll('.theme-option').forEach(option => {
+                    option.classList.remove('active');
+                    if (option.dataset.theme === savedTheme) {
+                        option.classList.add('active');
+                    }
+                });
+                
+                // Load font
+                const savedFont = localStorage.getItem('font') || 'default';
+                document.body.classList.add(`${savedFont}-font`);
+                
+                // Set active font option
+                document.querySelectorAll('.font-option').forEach(option => {
+                    option.classList.remove('active');
+                    if (option.dataset.font === savedFont) {
+                        option.classList.add('active');
+                    }
+                });
+                
+                // Load other settings
+                const notificationsEnabled = localStorage.getItem('notifications') !== 'false';
+                const aiEnabled = localStorage.getItem('ai') !== 'false';
+                const vibrationEnabled = localStorage.getItem('vibration') !== 'false';
+                
+                document.getElementById('notificationsToggle').checked = notificationsEnabled;
+                document.getElementById('aiToggle').checked = aiEnabled;
+                document.getElementById('vibrationToggle').checked = vibrationEnabled;
+            }
+            
             // Event Listeners
             addTaskBtn.addEventListener('click', addTask);
             
@@ -731,26 +1080,54 @@
             
             // Theme switching
             document.querySelectorAll('.theme-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    const theme = option.getAttribute('data-theme');
-                    document.body.className = theme + '-theme';
+                option.addEventListener('click', function() {
+                    const theme = this.getAttribute('data-theme');
+                    document.body.className = `${theme}-theme`;
                     localStorage.setItem('theme', theme);
+                    
+                    // Update active theme option
+                    document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
                 });
             });
             
-            // Load saved theme
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.body.className = savedTheme + '-theme';
-            }
+            // Font switching
+            document.querySelectorAll('.font-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const font = this.getAttribute('data-font');
+                    
+                    // Remove all font classes
+                    document.body.classList.remove('rounded-font', 'elegant-font');
+                    
+                    // Add selected font class
+                    if (font !== 'default') {
+                        document.body.classList.add(`${font}-font`);
+                    }
+                    
+                    localStorage.setItem('font', font);
+                    
+                    // Update active font option
+                    document.querySelectorAll('.font-option').forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
             
-            // Request notification permission
-            if ('Notification' in window) {
-                Notification.requestPermission();
-            }
+            // Settings toggles
+            document.getElementById('notificationsToggle').addEventListener('change', function() {
+                localStorage.setItem('notifications', this.checked);
+            });
+            
+            document.getElementById('aiToggle').addEventListener('change', function() {
+                localStorage.setItem('ai', this.checked);
+                updateAISuggestion();
+            });
+            
+            document.getElementById('vibrationToggle').addEventListener('change', function() {
+                localStorage.setItem('vibration', this.checked);
+            });
             
             // Initial render
-            renderTasks();
+            initApp();
         });
     </script>
 </body>
