@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mytodo Diary</title>
+    <title>MyTodo Diary</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -397,7 +397,7 @@
         <div class="header">
             <div class="logo-container">
                 <div class="logo">MD</div>
-                <div class="app-name">Mytodo Diary</div>
+                <div class="app-name">MyTodo Diary</div>
             </div>
             <button class="settings-btn" id="settingsBtn">
                 <i class="fas fa-cog"></i>
@@ -667,7 +667,7 @@
                         const timeUntilNotification = taskDateTime - now;
                         
                         setTimeout(() => {
-                            new Notification('Mytodo Diary Reminder', {
+                            new Notification('MyTodo Diary Reminder', {
                                 body: `Reminder: ${task.title}`,
                                 icon: 'https://example.com/icon.png' // In a real app, use a real URL
                             });
