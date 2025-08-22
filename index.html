@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mytodo Diary</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
@@ -149,7 +152,8 @@
             margin-bottom: 12px;
         }
 
-        .date-input, .time-input {
+        .date-input,
+        .time-input {
             flex: 1;
             padding: 12px;
             border: 1px solid #ddd;
@@ -445,15 +449,18 @@
             border-radius: 50%;
         }
 
-        input:checked + .slider {
+        input:checked+.slider {
             background-color: var(--primary-color);
         }
 
-        input:checked + .slider:before {
+        input:checked+.slider:before {
             transform: translateX(26px);
         }
 
-        .calendar-view, .stats-view, .reminders-view, .profile-view {
+        .calendar-view,
+        .stats-view,
+        .reminders-view,
+        .profile-view {
             display: none;
         }
 
@@ -575,13 +582,17 @@
             .app-name {
                 font-size: 1.2rem;
             }
-            
-            .task-input, .add-task-btn, .date-input, .time-input {
+
+            .task-input,
+            .add-task-btn,
+            .date-input,
+            .time-input {
                 padding: 12px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <div class="header">
@@ -598,7 +609,7 @@
             <!-- Home View -->
             <div class="home-view view-active">
                 <div class="date-display" id="currentDate">Monday, September 12</div>
-                
+
                 <div class="add-task-container">
                     <input type="text" class="task-input" id="taskInput" placeholder="Add a new task...">
                     <div class="datetime-container">
@@ -607,22 +618,23 @@
                     </div>
                     <button class="add-task-btn" id="addTaskBtn">Add Task</button>
                 </div>
-                
+
                 <div class="tasks-container">
                     <h2 class="section-title"><i class="fas fa-tasks"></i> My Tasks</h2>
                     <div class="task-list" id="taskList">
                         <!-- Tasks will be added here dynamically -->
                     </div>
                 </div>
-                
+
                 <div class="ai-suggestion" id="aiSuggestion">
-                    <strong><i class="fas fa-robot"></i> AI Suggestion:</strong> 
+                    <strong><i class="fas fa-robot"></i> AI Suggestion:</strong>
                     <span id="suggestionText">Try breaking large tasks into smaller, manageable steps.</span>
                 </div>
-                
+
                 <div class="cloud-notification-setup" id="cloudNotificationSetup">
-                    <strong><i class="fas fa-cloud"></i> Cloud Notifications:</strong> 
-                    <span id="cloudNotificationStatus">Enable cloud notifications to get reminders even when the app is closed</span>
+                    <strong><i class="fas fa-cloud"></i> Cloud Notifications:</strong>
+                    <span id="cloudNotificationStatus">Enable cloud notifications to get reminders even when the app is
+                        closed</span>
                     <button class="setup-button" id="enableCloudNotifications">Enable</button>
                 </div>
             </div>
@@ -631,7 +643,7 @@
             <div class="calendar-view">
                 <h2 class="section-title"><i class="fas fa-calendar"></i> Task Calendar</h2>
                 <div class="date-display" id="calendarDate">September 2023</div>
-                
+
                 <div class="calendar">
                     <div class="calendar-header">
                         <button class="task-action-btn" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
@@ -642,9 +654,10 @@
                         <!-- Calendar days will be generated here -->
                     </div>
                 </div>
-                
+
                 <div class="tasks-container">
-                    <h2 class="section-title"><i class="fas fa-calendar-day"></i> Tasks on <span id="selectedDate">Today</span></h2>
+                    <h2 class="section-title"><i class="fas fa-calendar-day"></i> Tasks on <span
+                            id="selectedDate">Today</span></h2>
                     <div class="task-list" id="calendarTaskList">
                         <!-- Calendar tasks will be added here dynamically -->
                     </div>
@@ -654,7 +667,7 @@
             <!-- Stats View -->
             <div class="stats-view">
                 <h2 class="section-title"><i class="fas fa-chart-pie"></i> Statistics</h2>
-                
+
                 <div class="stats-container">
                     <div class="stat-card">
                         <div class="stat-number" id="totalTasks">0</div>
@@ -673,7 +686,7 @@
                         <div class="stat-label">Overdue</div>
                     </div>
                 </div>
-                
+
                 <div class="tasks-container">
                     <h2 class="section-title"><i class="fas fa-award"></i> Productivity</h2>
                     <div class="stat-card">
@@ -686,7 +699,7 @@
             <!-- Reminders View -->
             <div class="reminders-view">
                 <h2 class="section-title"><i class="fas fa-bell"></i> Reminders</h2>
-                
+
                 <div class="add-task-container">
                     <h3>Notification Settings</h3>
                     <div class="setting-item">
@@ -718,7 +731,7 @@
                         </label>
                     </div>
                 </div>
-                
+
                 <div class="tasks-container">
                     <h2 class="section-title"><i class="fas fa-clock"></i> Upcoming Reminders</h2>
                     <div class="task-list" id="remindersList">
@@ -730,7 +743,7 @@
             <!-- Profile View -->
             <div class="profile-view">
                 <h2 class="section-title"><i class="fas fa-user"></i> Profile</h2>
-                
+
                 <div class="add-task-container">
                     <div style="text-align: center; margin-bottom: 16px;">
                         <div class="logo" style="width: 60px; height: 60px; margin: 0 auto;">
@@ -739,7 +752,7 @@
                         <h3 style="margin-top: 12px;">User Profile</h3>
                         <p style="color: #888; margin-top: 4px;">Todo Enthusiast</p>
                     </div>
-                    
+
                     <div class="setting-item">
                         <span>Account Settings</span>
                         <button class="task-action-btn"><i class="fas fa-chevron-right"></i></button>
@@ -757,7 +770,7 @@
                         <button class="task-action-btn"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </div>
-                
+
                 <div class="tasks-container">
                     <h2 class="section-title"><i class="fas fa-info-circle"></i> About</h2>
                     <div class="add-task-container">
@@ -799,7 +812,7 @@
         <div class="modal-content">
             <button class="close-modal" id="closeModal">&times;</button>
             <h2 class="modal-title">App Settings</h2>
-            
+
             <div class="setting-item">
                 <span>Theme</span>
                 <div class="setting-options">
@@ -808,7 +821,7 @@
                     <div class="theme-option theme-minimal" data-theme="minimal"></div>
                 </div>
             </div>
-            
+
             <div class="setting-item">
                 <span>Font Style</span>
                 <div class="setting-options">
@@ -817,7 +830,7 @@
                     <div class="font-option" data-font="elegant">Elegant</div>
                 </div>
             </div>
-            
+
             <div class="setting-item">
                 <span>Notifications</span>
                 <label class="switch">
@@ -825,7 +838,7 @@
                     <span class="slider round"></span>
                 </label>
             </div>
-            
+
             <div class="setting-item">
                 <span>AI Suggestions</span>
                 <label class="switch">
@@ -833,7 +846,7 @@
                     <span class="slider round"></span>
                 </label>
             </div>
-            
+
             <div class="setting-item">
                 <span>Vibration</span>
                 <label class="switch">
@@ -841,7 +854,7 @@
                     <span class="slider round"></span>
                 </label>
             </div>
-            
+
             <div class="setting-item">
                 <span>Auto Backup</span>
                 <label class="switch">
@@ -857,30 +870,131 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-           // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBg0Q5u5HFcN2-g4pDRfzOlCsi05EqERwM",
-  authDomain: "create-project-bc9f6.firebaseapp.com",
-  projectId: "create-project-bc9f6",
-  storageBucket: "create-project-bc9f6.firebasestorage.app",
-  messagingSenderId: "192418533849",
-  appId: "1:192418533849:web:78cebf94feb3a29c8d09c8",
-  measurementId: "G-K8MQEXZHKP"
-};
-            
-            // Initialize Firebase
-            let messaging = null;
-            try {
-                firebase.initializeApp(firebaseConfig);
+       
+                document.addEventListener('DOMContentLoaded', function() {
+        // Firebase Config (fixed storageBucket)
+        const firebaseConfig = {
+                    apiKey: "AIzaSyBg0Q5u5HFcN2-g4pDRfzOlCsi05EqERwM",
+                authDomain: "create-project-bc9f6.firebaseapp.com",
+                projectId: "create-project-bc9f6",
+                storageBucket: "create-project-bc9f6.appspot.com", // ✅ fixed
+                messagingSenderId: "192418533849",
+                appId: "1:192418533849:web:78cebf94feb3a29c8d09c8",
+                measurementId: "G-K8MQEXZHKP"
+        };
+
+                // Initialize Firebase
+                let messaging = null;
+                try {
+                    firebase.initializeApp(firebaseConfig);
                 messaging = firebase.messaging();
                 console.log("Firebase initialized successfully");
-            } catch (error) {
-                console.error("Firebase initialization error:", error);
-                document.getElementById('cloudNotificationStatus').textContent = 
-                    "Cloud notifications not available (Firebase config needed)";
+        } catch (error) {
+                    console.error("Firebase initialization error:", error);
+                document.getElementById('cloudNotificationStatus').textContent =
+                "Cloud notifications not available (Firebase config needed)";
+        }
+
+                // Register Firebase Service Worker
+                if ("serviceWorker" in navigator) {
+                    navigator.serviceWorker.register("/firebase-messaging-sw.js")
+                        .then((registration) => {
+                            console.log("Service Worker registered:", registration);
+                            if (messaging) {
+                                messaging.useServiceWorker(registration);
+                            }
+                        })
+                        .catch(err => console.error("Service Worker registration failed:", err));
+        }
+
+                // Request Cloud Notification Permission
+                async function requestCloudNotificationPermission() {
+            if (!messaging) {
+                    showNotification("Firebase not configured. Please add your Firebase config.", "error");
+                return;
             }
-            
+
+                try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    const token = await messaging.getToken({
+                    vapidKey: "BAIrvWbahpuT-O65Rk8vNI0G6u3oN5IDuv-L7kPjB7D1mEGZIQGYumFgJXm6x3oU66pKi_2PEGrT1LX16BCQBFY" // ✅ replace with real key
+                    });
+
+                if (token) {
+                    localStorage.setItem('fcmToken', token);
+                cloudNotificationStatus.textContent = "Cloud notifications enabled";
+                enableCloudBtn.textContent = "Disable";
+                document.getElementById('enableCloudNotificationsToggle').checked = true;
+                showNotification("Cloud notifications enabled!");
+                console.log("FCM Token:", token);
+                    } else {
+                    showNotification("Failed to get cloud notification token", "error");
+                    }
+                } else {
+                    showNotification("Notification permission denied", "error");
+                }
+            } catch (error) {
+                    console.error("Error getting notification permission:", error);
+                showNotification("Error enabling cloud notifications", "error");
+            }
+        }
+
+                // Disable Cloud Notifications
+                function disableCloudNotifications() {
+            if (!messaging) return;
+                messaging.deleteToken()
+                .then(() => {
+                    localStorage.removeItem('fcmToken');
+                cloudNotificationStatus.textContent = "Cloud notifications disabled";
+                enableCloudBtn.textContent = "Enable";
+                document.getElementById('enableCloudNotificationsToggle').checked = false;
+                showNotification("Cloud notifications disabled");
+                })
+                .catch(error => {
+                    console.error("Error deleting token:", error);
+                showNotification("Error disabling cloud notifications", "error");
+                });
+        }
+
+                // Show in-app notification
+                function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = 'notification show';
+                if (type === 'error') {
+                    notification.style.backgroundColor = '#FF6B6B';
+            } else {
+                    notification.style.backgroundColor = 'var(--primary-color)';
+            }
+            setTimeout(() => {
+                    notification.className = 'notification';
+            }, 3000);
+        }
+
+                // Attach handlers to enable/disable cloud notifications
+                const enableCloudBtn = document.getElementById('enableCloudNotifications');
+                const cloudNotificationStatus = document.getElementById('cloudNotificationStatus');
+
+        enableCloudBtn.addEventListener('click', () => {
+            if (localStorage.getItem('fcmToken')) {
+                    disableCloudNotifications();
+            } else {
+                    requestCloudNotificationPermission();
+            }
+        });
+
+                document.getElementById('enableCloudNotificationsToggle').addEventListener('change', function() {
+            if (this.checked) {
+                    requestCloudNotificationPermission();
+            } else {
+                    disableCloudNotifications();
+            }
+        });
+    });
+        
+
+
             // DOM Elements
             const taskInput = document.getElementById('taskInput');
             const taskDate = document.getElementById('taskDate');
@@ -898,51 +1012,51 @@ const firebaseConfig = {
             const views = document.querySelectorAll('.main-content > div');
             const enableCloudBtn = document.getElementById('enableCloudNotifications');
             const cloudNotificationStatus = document.getElementById('cloudNotificationStatus');
-            
+
             // Set current date
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             currentDate.textContent = now.toLocaleDateString('en-US', options);
-            
+
             // Set default date and time to current
             const today = new Date().toISOString().split('T')[0];
             taskDate.value = today;
-            
-            const currentTime = now.getHours().toString().padStart(2, '0') + ':' + 
-                               now.getMinutes().toString().padStart(2, '0');
+
+            const currentTime = now.getHours().toString().padStart(2, '0') + ':' +
+                now.getMinutes().toString().padStart(2, '0');
             taskTime.value = currentTime;
-            
+
             // Sample tasks
             const sampleTasks = [
-                { 
+                {
                     id: 1,
-                    title: 'Complete project proposal', 
-                    date: '2023-09-15', 
-                    time: '14:00', 
+                    title: 'Complete project proposal',
+                    date: '2023-09-15',
+                    time: '14:00',
                     completed: false,
                     reminder: true
                 },
-                { 
+                {
                     id: 2,
-                    title: 'Buy groceries', 
-                    date: '2023-09-13', 
-                    time: '10:30', 
+                    title: 'Buy groceries',
+                    date: '2023-09-13',
+                    time: '10:30',
                     completed: false,
                     reminder: true
                 },
-                { 
+                {
                     id: 3,
-                    title: 'Call mom', 
-                    date: '2023-09-12', 
-                    time: '19:00', 
+                    title: 'Call mom',
+                    date: '2023-09-12',
+                    time: '19:00',
                     completed: true,
                     reminder: false
                 }
             ];
-            
+
             // Load tasks from localStorage or use sample tasks
             let tasks = JSON.parse(localStorage.getItem('tasks')) || sampleTasks;
-            
+
             // Initialize the app
             function initApp() {
                 renderTasks();
@@ -951,35 +1065,35 @@ const firebaseConfig = {
                 loadSettings();
                 initCalendar();
                 renderReminders();
-                
+
                 // Request notification permission
                 if ('Notification' in window && Notification.permission === 'default') {
                     Notification.requestPermission();
                 }
-                
+
                 // Check for notifications every minute
                 setInterval(checkNotifications, 60000);
-                
+
                 // Initialize cloud notifications if available
                 initCloudNotifications();
             }
-            
+
             // Initialize cloud notifications
             function initCloudNotifications() {
                 if (!messaging) return;
-                
+
                 // Check if already granted
                 if (localStorage.getItem('fcmToken')) {
                     cloudNotificationStatus.textContent = "Cloud notifications enabled";
                     enableCloudBtn.textContent = "Disable";
                     document.getElementById('enableCloudNotificationsToggle').checked = true;
                 }
-                
+
                 // Handle received messages
                 messaging.onMessage((payload) => {
                     console.log('Message received:', payload);
                     showNotification(payload.notification.body);
-                    
+
                     // Also show browser notification if permitted
                     if (Notification.permission === 'granted') {
                         new Notification(payload.notification.title, {
@@ -989,14 +1103,14 @@ const firebaseConfig = {
                     }
                 });
             }
-            
+
             // Request cloud notification permission
             async function requestCloudNotificationPermission() {
                 if (!messaging) {
                     showNotification("Firebase not configured. Please add your Firebase config.", "error");
                     return;
                 }
-                
+
                 try {
                     // Request permission for notifications
                     const permission = await Notification.requestPermission();
@@ -1005,7 +1119,7 @@ const firebaseConfig = {
                         const token = await messaging.getToken({
                             vapidKey: "YOUR_VAPID_KEY" // Replace with your VAPID key
                         });
-                        
+
                         if (token) {
                             // Save the token to localStorage
                             localStorage.setItem('fcmToken', token);
@@ -1013,7 +1127,7 @@ const firebaseConfig = {
                             enableCloudBtn.textContent = "Disable";
                             document.getElementById('enableCloudNotificationsToggle').checked = true;
                             showNotification("Cloud notifications enabled!");
-                            
+
                             // In a real app, you would send this token to your server
                             console.log("FCM Token:", token);
                         } else {
@@ -1027,11 +1141,11 @@ const firebaseConfig = {
                     showNotification("Error enabling cloud notifications", "error");
                 }
             }
-            
+
             // Disable cloud notifications
             function disableCloudNotifications() {
                 if (!messaging) return;
-                
+
                 // Delete token
                 messaging.deleteToken()
                     .then(() => {
@@ -1046,11 +1160,11 @@ const firebaseConfig = {
                         showNotification("Error disabling cloud notifications", "error");
                     });
             }
-            
+
             // Render tasks
             function renderTasks() {
                 taskList.innerHTML = '';
-                
+
                 if (tasks.length === 0) {
                     taskList.innerHTML = `
                         <div class="empty-state">
@@ -1060,11 +1174,11 @@ const firebaseConfig = {
                     `;
                     return;
                 }
-                
+
                 // Filter out completed tasks
                 const pendingTasks = tasks.filter(task => !task.completed);
                 const completedTasks = tasks.filter(task => task.completed);
-                
+
                 if (pendingTasks.length === 0 && completedTasks.length === 0) {
                     taskList.innerHTML = `
                         <div class="empty-state">
@@ -1074,43 +1188,43 @@ const firebaseConfig = {
                     `;
                     return;
                 }
-                
+
                 // Render pending tasks
                 pendingTasks.forEach((task) => {
                     const taskItem = createTaskElement(task);
                     taskList.appendChild(taskItem);
                 });
-                
+
                 // Render completed tasks if any
                 if (completedTasks.length > 0) {
                     const completedHeader = document.createElement('h3');
                     completedHeader.className = 'section-title';
                     completedHeader.innerHTML = '<i class="fas fa-check-circle"></i> Completed';
                     taskList.appendChild(completedHeader);
-                    
+
                     completedTasks.forEach((task) => {
                         const taskItem = createTaskElement(task);
                         taskList.appendChild(taskItem);
                     });
                 }
-                
+
                 // Update AI suggestion
                 updateAISuggestion();
             }
-            
+
             // Create task element
             function createTaskElement(task) {
                 const taskItem = document.createElement('div');
                 taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
                 taskItem.dataset.id = task.id;
-                
+
                 const taskDateObj = new Date(task.date);
-                const formattedDate = taskDateObj.toLocaleDateString('en-US', { 
-                    month: 'short', 
+                const formattedDate = taskDateObj.toLocaleDateString('en-US', {
+                    month: 'short',
                     day: 'numeric',
                     year: 'numeric'
                 });
-                
+
                 taskItem.innerHTML = `
                     <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
                     <div class="task-content">
@@ -1122,31 +1236,31 @@ const firebaseConfig = {
                         <button class="task-action-btn delete-btn"><i class="fas fa-trash"></i></button>
                     </div>
                 `;
-                
+
                 // Add event listeners
                 const checkbox = taskItem.querySelector('.task-checkbox');
                 checkbox.addEventListener('change', () => toggleTaskCompleted(task.id));
-                
+
                 const deleteBtn = taskItem.querySelector('.delete-btn');
                 deleteBtn.addEventListener('click', () => deleteTask(task.id));
-                
+
                 const editBtn = taskItem.querySelector('.edit-btn');
                 editBtn.addEventListener('click', () => editTask(task.id));
-                
+
                 return taskItem;
             }
-            
+
             // Add new task
             function addTask() {
                 const title = taskInput.value.trim();
                 const date = taskDate.value;
                 const time = taskTime.value;
-                
+
                 if (title === '') {
                     showNotification('Please enter a task title', 'error');
                     return;
                 }
-                
+
                 const newTask = {
                     id: Date.now(),
                     title,
@@ -1155,43 +1269,43 @@ const firebaseConfig = {
                     completed: false,
                     reminder: true
                 };
-                
+
                 tasks.push(newTask);
                 saveTasks();
                 renderTasks();
                 updateStats();
                 updateCalendar();
-                
+
                 taskInput.value = '';
                 showNotification('Task added successfully!');
-                
+
                 // Schedule notification if time is in the future
                 scheduleNotification(newTask);
-                
+
                 // Schedule cloud notification if enabled
                 if (localStorage.getItem('fcmToken')) {
                     scheduleCloudNotification(newTask);
                 }
             }
-            
+
             // Schedule cloud notification (simulated - in a real app, this would call your server)
             function scheduleCloudNotification(task) {
                 // In a real application, you would:
                 // 1. Send the task details and FCM token to your server
                 // 2. The server would schedule a push notification at the specified time
                 // 3. The server would send the notification via FCM
-                
+
                 console.log("Scheduling cloud notification for:", task);
-                
+
                 // This is just a simulation - in reality, this would be handled by your backend
                 const taskDateTime = new Date(`${task.date}T${task.time}`);
                 const now = new Date();
-                
+
                 if (taskDateTime > now) {
                     showNotification("Cloud notification scheduled for your task");
                 }
             }
-            
+
             // Toggle task completed status
             function toggleTaskCompleted(taskId) {
                 const taskIndex = tasks.findIndex(task => task.id === taskId);
@@ -1201,13 +1315,13 @@ const firebaseConfig = {
                     renderTasks();
                     updateStats();
                     updateCalendar();
-                    
+
                     if (tasks[taskIndex].completed) {
                         showNotification('Task completed!');
                     }
                 }
             }
-            
+
             // Delete task
             function deleteTask(taskId) {
                 tasks = tasks.filter(task => task.id !== taskId);
@@ -1217,7 +1331,7 @@ const firebaseConfig = {
                 updateCalendar();
                 showNotification('Task deleted');
             }
-            
+
             // Edit task
             function editTask(taskId) {
                 const task = tasks.find(task => task.id === taskId);
@@ -1225,64 +1339,64 @@ const firebaseConfig = {
                     taskInput.value = task.title;
                     taskDate.value = task.date;
                     taskTime.value = task.time;
-                    
+
                     // Remove the task and update UI
                     tasks = tasks.filter(t => t.id !== taskId);
                     saveTasks();
                     renderTasks();
                     updateStats();
                     updateCalendar();
-                    
+
                     showNotification('Edit your task below');
                 }
             }
-            
+
             // Save tasks to localStorage
             function saveTasks() {
                 localStorage.setItem('tasks', JSON.stringify(tasks));
             }
-            
+
             // Show notification
             function showNotification(message, type = 'success') {
                 notification.textContent = message;
                 notification.className = 'notification show';
-                
+
                 if (type === 'error') {
                     notification.style.backgroundColor = '#FF6B6B';
                 } else {
                     notification.style.backgroundColor = 'var(--primary-color)';
                 }
-                
+
                 setTimeout(() => {
                     notification.className = 'notification';
                 }, 3000);
-                
+
                 // Vibrate if enabled
                 if (navigator.vibrate && document.getElementById('vibrationToggle').checked) {
                     navigator.vibrate(200);
                 }
             }
-            
+
             // Schedule notification
             function scheduleNotification(task) {
                 if (!('Notification' in window)) {
                     return;
                 }
-                
+
                 if (Notification.permission === 'granted' && document.getElementById('notificationsToggle').checked) {
                     const taskDateTime = new Date(`${task.date}T${task.time}`);
                     const now = new Date();
-                    
+
                     // Only schedule if the task is in the future
                     if (taskDateTime > now) {
                         const timeUntilNotification = taskDateTime - now;
-                        
+
                         setTimeout(() => {
                             new Notification('Mytodo Diary Reminder', {
                                 body: `Reminder: ${task.title}`,
                                 icon: 'https://example.com/icon.png'
                             });
-                            
+
                             showNotification(`Reminder: ${task.title}`);
                         }, timeUntilNotification);
                     }
@@ -1294,42 +1408,42 @@ const firebaseConfig = {
                     });
                 }
             }
-            
+
             // Check for due notifications
             function checkNotifications() {
                 const now = new Date();
                 const currentTimeString = now.toTimeString().substring(0, 5);
                 const currentDateString = now.toISOString().split('T')[0];
-                
+
                 tasks.forEach(task => {
-                    if (!task.completed && task.reminder && 
-                        task.date === currentDateString && 
+                    if (!task.completed && task.reminder &&
+                        task.date === currentDateString &&
                         task.time === currentTimeString) {
-                        
+
                         if ('Notification' in window && Notification.permission === 'granted') {
                             new Notification('Mytodo Diary Reminder', {
                                 body: `It's time for: ${task.title}`
                             });
                         }
-                        
+
                         showNotification(`It's time for: ${task.title}`);
                     }
                 });
             }
-            
+
             // Update AI suggestion
             function updateAISuggestion() {
                 if (!document.getElementById('aiToggle').checked) {
                     aiSuggestion.style.display = 'none';
                     return;
                 }
-                
+
                 aiSuggestion.style.display = 'block';
                 const pendingTasks = tasks.filter(task => !task.completed).length;
                 const completedTasks = tasks.filter(task => task.completed).length;
-                
+
                 let suggestion = '';
-                
+
                 if (pendingTasks === 0 && completedTasks === 0) {
                     suggestion = 'Add your first task to get started!';
                 } else if (pendingTasks === 0) {
@@ -1346,46 +1460,46 @@ const firebaseConfig = {
                         'Focus on one task at a time for better efficiency.',
                         'Take short breaks between tasks to maintain focus.'
                     ];
-                    
+
                     suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
                 }
-                
+
                 suggestionText.textContent = suggestion;
             }
-            
+
             // Update stats
             function updateStats() {
                 const totalTasks = tasks.length;
                 const completedTasks = tasks.filter(task => task.completed).length;
                 const pendingTasks = totalTasks - completedTasks;
-                
+
                 // Simple overdue calculation
                 const today = new Date().toISOString().split('T')[0];
                 const overdueTasks = tasks.filter(task => !task.completed && task.date < today).length;
-                
+
                 const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-                
+
                 document.getElementById('totalTasks').textContent = totalTasks;
                 document.getElementById('completedTasks').textContent = completedTasks;
                 document.getElementById('pendingTasks').textContent = pendingTasks;
                 document.getElementById('overdueTasks').textContent = overdueTasks;
                 document.getElementById('completionRate').textContent = `${completionRate}%`;
             }
-            
+
             // Setup navigation
             function setupNavigation() {
                 navItems.forEach(item => {
-                    item.addEventListener('click', function() {
+                    item.addEventListener('click', function () {
                         const viewName = this.dataset.view;
-                        
+
                         // Update active nav item
                         navItems.forEach(nav => nav.classList.remove('active'));
                         this.classList.add('active');
-                        
+
                         // Show the corresponding view
                         views.forEach(view => view.classList.remove('view-active'));
                         document.querySelector(`.${viewName}`).classList.add('view-active');
-                        
+
                         // Update specific views if needed
                         if (viewName === 'stats-view') {
                             updateStats();
@@ -1397,29 +1511,29 @@ const firebaseConfig = {
                     });
                 });
             }
-            
+
             // Initialize calendar
             function initCalendar() {
                 const prevMonthBtn = document.getElementById('prevMonth');
                 const nextMonthBtn = document.getElementById('nextMonth');
-                
+
                 let currentMonth = now.getMonth();
                 let currentYear = now.getFullYear();
-                
+
                 function renderCalendar() {
                     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                                       'July', 'August', 'September', 'October', 'November', 'December'];
-                    
+                        'July', 'August', 'September', 'October', 'November', 'December'];
+
                     document.getElementById('currentMonthYear').textContent = `${monthNames[currentMonth]} ${currentYear}`;
-                    
+
                     // Get first day of month and number of days
                     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
                     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-                    
+
                     // Generate calendar grid
                     const calendarGrid = document.getElementById('calendarGrid');
                     calendarGrid.innerHTML = '';
-                    
+
                     // Add day headers
                     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                     dayNames.forEach(day => {
@@ -1429,40 +1543,40 @@ const firebaseConfig = {
                         dayElement.textContent = day;
                         calendarGrid.appendChild(dayElement);
                     });
-                    
+
                     // Add empty cells for days before the first day of the month
                     for (let i = 0; i < firstDay; i++) {
                         const emptyCell = document.createElement('div');
                         emptyCell.className = 'calendar-cell';
                         calendarGrid.appendChild(emptyCell);
                     }
-                    
+
                     // Add cells for each day of the month
                     for (let day = 1; day <= daysInMonth; day++) {
                         const dayElement = document.createElement('div');
                         dayElement.className = 'calendar-cell';
                         dayElement.textContent = day;
-                        
+
                         // Check if this day has tasks
                         const dateString = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                         const hasTasks = tasks.some(task => task.date === dateString);
-                        
+
                         if (hasTasks) {
                             dayElement.classList.add('has-tasks');
                         }
-                        
+
                         // Highlight today
                         const today = new Date();
-                        if (currentYear === today.getFullYear() && 
-                            currentMonth === today.getMonth() && 
+                        if (currentYear === today.getFullYear() &&
+                            currentMonth === today.getMonth() &&
                             day === today.getDate()) {
                             dayElement.classList.add('today');
                         }
-                        
+
                         calendarGrid.appendChild(dayElement);
                     }
                 }
-                
+
                 prevMonthBtn.addEventListener('click', () => {
                     currentMonth--;
                     if (currentMonth < 0) {
@@ -1471,7 +1585,7 @@ const firebaseConfig = {
                     }
                     renderCalendar();
                 });
-                
+
                 nextMonthBtn.addEventListener('click', () => {
                     currentMonth++;
                     if (currentMonth > 11) {
@@ -1480,25 +1594,25 @@ const firebaseConfig = {
                     }
                     renderCalendar();
                 });
-                
+
                 renderCalendar();
             }
-            
+
             // Update calendar
             function updateCalendar() {
                 initCalendar(); // Reinitialize calendar to reflect changes
             }
-            
+
             // Render reminders
             function renderReminders() {
                 const remindersList = document.getElementById('remindersList');
                 remindersList.innerHTML = '';
-                
+
                 const upcomingTasks = tasks
                     .filter(task => !task.completed && task.reminder)
                     .sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time))
                     .slice(0, 5);
-                
+
                 if (upcomingTasks.length === 0) {
                     remindersList.innerHTML = `
                         <div class="empty-state">
@@ -1508,19 +1622,19 @@ const firebaseConfig = {
                     `;
                     return;
                 }
-                
+
                 upcomingTasks.forEach(task => {
                     const taskItem = createTaskElement(task);
                     remindersList.appendChild(taskItem);
                 });
             }
-            
+
             // Load settings
             function loadSettings() {
                 // Load theme
                 const savedTheme = localStorage.getItem('theme') || 'default';
                 document.body.className = `${savedTheme}-theme`;
-                
+
                 // Set active theme option
                 document.querySelectorAll('.theme-option').forEach(option => {
                     option.classList.remove('active');
@@ -1528,11 +1642,11 @@ const firebaseConfig = {
                         option.classList.add('active');
                     }
                 });
-                
+
                 // Load font
                 const savedFont = localStorage.getItem('font') || 'default';
                 document.body.classList.add(`${savedFont}-font`);
-                
+
                 // Set active font option
                 document.querySelectorAll('.font-option').forEach(option => {
                     option.classList.remove('active');
@@ -1540,36 +1654,36 @@ const firebaseConfig = {
                         option.classList.add('active');
                     }
                 });
-                
+
                 // Load other settings
                 const notificationsEnabled = localStorage.getItem('notifications') !== 'false';
                 const aiEnabled = localStorage.getItem('ai') !== 'false';
                 const vibrationEnabled = localStorage.getItem('vibration') !== 'false';
                 const cloudEnabled = localStorage.getItem('fcmToken') !== null;
-                
+
                 document.getElementById('notificationsToggle').checked = notificationsEnabled;
                 document.getElementById('aiToggle').checked = aiEnabled;
                 document.getElementById('vibrationToggle').checked = vibrationEnabled;
                 document.getElementById('enableCloudNotificationsToggle').checked = cloudEnabled;
             }
-            
+
             // Event Listeners
             addTaskBtn.addEventListener('click', addTask);
-            
+
             taskInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     addTask();
                 }
             });
-            
+
             settingsBtn.addEventListener('click', () => {
                 settingsModal.classList.add('active');
             });
-            
+
             closeModal.addEventListener('click', () => {
                 settingsModal.classList.remove('active');
             });
-            
+
             // Cloud notification button
             enableCloudBtn.addEventListener('click', () => {
                 if (localStorage.getItem('fcmToken')) {
@@ -1578,67 +1692,69 @@ const firebaseConfig = {
                     requestCloudNotificationPermission();
                 }
             });
-            
+
             // Cloud notification toggle
-            document.getElementById('enableCloudNotificationsToggle').addEventListener('change', function() {
+            document.getElementById('enableCloudNotificationsToggle').addEventListener('change', function () {
                 if (this.checked) {
                     requestCloudNotificationPermission();
                 } else {
                     disableCloudNotifications();
                 }
             });
-            
+
             // Theme switching
             document.querySelectorAll('.theme-option').forEach(option => {
-                option.addEventListener('click', function() {
+                option.addEventListener('click', function () {
                     const theme = this.getAttribute('data-theme');
                     document.body.className = `${theme}-theme`;
                     localStorage.setItem('theme', theme);
-                    
+
                     // Update active theme option
                     document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
                     this.classList.add('active');
                 });
             });
-            
+
             // Font switching
             document.querySelectorAll('.font-option').forEach(option => {
-                option.addEventListener('click', function() {
+                option.addEventListener('click', function () {
                     const font = this.getAttribute('data-font');
-                    
+
                     // Remove all font classes
                     document.body.classList.remove('rounded-font', 'elegant-font');
-                    
+
                     // Add selected font class
                     if (font !== 'default') {
                         document.body.classList.add(`${font}-font`);
                     }
-                    
+
                     localStorage.setItem('font', font);
-                    
+
                     // Update active font option
                     document.querySelectorAll('.font-option').forEach(opt => opt.classList.remove('active'));
                     this.classList.add('active');
                 });
             });
-            
+
             // Settings toggles
-            document.getElementById('notificationsToggle').addEventListener('change', function() {
-                localStorage.setItem('notifications', this.checked);
-            });
-            
-            document.getElementById('aiToggle').addEventListener('change', function() {
-                localStorage.setItem('ai', this.checked);
-                updateAISuggestion();
-            });
-            
-            document.getElementById('vibrationToggle').addEventListener('change', function() {
-                localStorage.setItem('vibration', this.checked);
-            });
-            
-            // Initial render
-            initApp();
-        });
+             // Settings toggles
+                document.getElementById('notificationsToggle').addEventListener('change', function () {
+                    localStorage.setItem('notifications', this.checked);
+                });
+
+                document.getElementById('aiToggle').addEventListener('change', function () {
+                    localStorage.setItem('ai', this.checked);
+                    updateAISuggestion();
+                });
+
+                document.getElementById('vibrationToggle').addEventListener('change', function () {
+                    localStorage.setItem('vibration', this.checked);
+                });
+
+                // Initial render
+                initApp();
+                
     </script>
 </body>
+
 </html>
