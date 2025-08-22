@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mytodo Diary</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #6C63FF;
@@ -55,8 +56,6 @@
             font-family: var(--font-family);
             background-color: var(--background-color);
             color: var(--text-color);
-            padding: 0;
-            margin: 0;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -451,7 +450,7 @@
             transform: translateX(26px);
         }
 
-        .calendar-view, .add-view, .reminders-view, .profile-view {
+        .calendar-view, .stats-view, .reminders-view, .profile-view {
             display: none;
         }
 
@@ -483,6 +482,67 @@
         .stat-label {
             font-size: 14px;
             color: #888;
+        }
+
+        .calendar {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-cell {
+            text-align: center;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .calendar-cell.today {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .calendar-cell.has-tasks {
+            position: relative;
+        }
+
+        .calendar-cell.has-tasks::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #ddd;
         }
 
         @media (max-width: 480px) {
@@ -539,20 +599,29 @@
             <div class="calendar-view">
                 <h2 class="section-title"><i class="fas fa-calendar"></i> Task Calendar</h2>
                 <div class="date-display" id="calendarDate">September 2023</div>
+                
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <button class="task-action-btn" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                        <span id="currentMonthYear">September 2023</span>
+                        <button class="task-action-btn" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar days will be generated here -->
+                    </div>
+                </div>
+                
                 <div class="tasks-container">
+                    <h2 class="section-title"><i class="fas fa-calendar-day"></i> Tasks on <span id="selectedDate">Today</span></h2>
                     <div class="task-list" id="calendarTaskList">
                         <!-- Calendar tasks will be added here dynamically -->
                     </div>
                 </div>
             </div>
 
-            <!-- Add View -->
-            <div class="add-view">
-                <h2 class="section-title"><i class="fas fa-plus-circle"></i> Quick Add</h2>
-                <div class="add-task-container">
-                    <input type="text" class="task-input" id="quickTaskInput" placeholder="Add a new task...">
-                    <button class="add-task-btn" id="quickAddTaskBtn">Add Task</button>
-                </div>
+            <!-- Stats View -->
+            <div class="stats-view">
+                <h2 class="section-title"><i class="fas fa-chart-pie"></i> Statistics</h2>
                 
                 <div class="stats-container">
                     <div class="stat-card">
@@ -572,12 +641,47 @@
                         <div class="stat-label">Overdue</div>
                     </div>
                 </div>
+                
+                <div class="tasks-container">
+                    <h2 class="section-title"><i class="fas fa-award"></i> Productivity</h2>
+                    <div class="stat-card">
+                        <div class="stat-number" id="completionRate">0%</div>
+                        <div class="stat-label">Completion Rate</div>
+                    </div>
+                </div>
             </div>
 
             <!-- Reminders View -->
             <div class="reminders-view">
                 <h2 class="section-title"><i class="fas fa-bell"></i> Reminders</h2>
+                
+                <div class="add-task-container">
+                    <h3>Notification Settings</h3>
+                    <div class="setting-item">
+                        <span>Enable Notifications</span>
+                        <label class="switch">
+                            <input type="checkbox" id="enableNotifications" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>Sound Alerts</span>
+                        <label class="switch">
+                            <input type="checkbox" id="soundAlerts" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>Vibration</span>
+                        <label class="switch">
+                            <input type="checkbox" id="vibrationAlerts" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                
                 <div class="tasks-container">
+                    <h2 class="section-title"><i class="fas fa-clock"></i> Upcoming Reminders</h2>
                     <div class="task-list" id="remindersList">
                         <!-- Reminders will be added here dynamically -->
                     </div>
@@ -587,6 +691,7 @@
             <!-- Profile View -->
             <div class="profile-view">
                 <h2 class="section-title"><i class="fas fa-user"></i> Profile</h2>
+                
                 <div class="add-task-container">
                     <div style="text-align: center; margin-bottom: 16px;">
                         <div class="logo" style="width: 60px; height: 60px; margin: 0 auto;">
@@ -613,6 +718,16 @@
                         <button class="task-action-btn"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </div>
+                
+                <div class="tasks-container">
+                    <h2 class="section-title"><i class="fas fa-info-circle"></i> About</h2>
+                    <div class="add-task-container">
+                        <p style="text-align: center; color: #888;">
+                            Mytodo Diary v1.0.0<br>
+                            Your personal task management assistant
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -625,8 +740,8 @@
                 <i class="fas fa-calendar nav-icon"></i>
                 <span>Calendar</span>
             </div>
-            <div class="nav-item" data-view="add-view">
-                <i class="fas fa-plus-circle nav-icon"></i>
+            <div class="nav-item" data-view="stats-view">
+                <i class="fas fa-chart-pie nav-icon"></i>
                 <span>Stats</span>
             </div>
             <div class="nav-item" data-view="reminders-view">
@@ -684,6 +799,14 @@
                 <span>Vibration</span>
                 <label class="switch">
                     <input type="checkbox" id="vibrationToggle" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            
+            <div class="setting-item">
+                <span>Auto Backup</span>
+                <label class="switch">
+                    <input type="checkbox" id="autoBackupToggle">
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -762,11 +885,16 @@
                 updateStats();
                 setupNavigation();
                 loadSettings();
+                initCalendar();
+                renderReminders();
                 
                 // Request notification permission
                 if ('Notification' in window && Notification.permission === 'default') {
                     Notification.requestPermission();
                 }
+                
+                // Check for notifications every minute
+                setInterval(checkNotifications, 60000);
             }
             
             // Render tasks
@@ -775,53 +903,87 @@
                 
                 if (tasks.length === 0) {
                     taskList.innerHTML = `
-                        <div style="text-align: center; padding: 20px; color: #888;">
-                            <i class="fas fa-check-circle" style="font-size: 48px; margin-bottom: 16px;"></i>
+                        <div class="empty-state">
+                            <i class="fas fa-check-circle"></i>
                             <p>No tasks yet. Add a new task to get started!</p>
                         </div>
                     `;
                     return;
                 }
                 
-                tasks.forEach((task, index) => {
-                    const taskItem = document.createElement('div');
-                    taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
-                    taskItem.dataset.id = task.id;
-                    
-                    const taskDateObj = new Date(task.date);
-                    const formattedDate = taskDateObj.toLocaleDateString('en-US', { 
-                        month: 'short', 
-                        day: 'numeric',
-                        year: 'numeric'
-                    });
-                    
-                    taskItem.innerHTML = `
-                        <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
-                        <div class="task-content">
-                            <div class="task-title">${task.title}</div>
-                            <div class="task-datetime">${formattedDate} at ${task.time}</div>
-                        </div>
-                        <div class="task-actions">
-                            <button class="task-action-btn edit-btn"><i class="fas fa-edit"></i></button>
-                            <button class="task-action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                // Filter out completed tasks
+                const pendingTasks = tasks.filter(task => !task.completed);
+                const completedTasks = tasks.filter(task => task.completed);
+                
+                if (pendingTasks.length === 0 && completedTasks.length === 0) {
+                    taskList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-check-circle"></i>
+                            <p>No tasks yet. Add a new task to get started!</p>
                         </div>
                     `;
-                    
-                    // Add event listeners
-                    const checkbox = taskItem.querySelector('.task-checkbox');
-                    checkbox.addEventListener('change', () => toggleTaskCompleted(task.id));
-                    
-                    const deleteBtn = taskItem.querySelector('.delete-btn');
-                    deleteBtn.addEventListener('click', () => deleteTask(task.id));
-                    
-                    const editBtn = taskItem.querySelector('.edit-btn');
-                    editBtn.addEventListener('click', () => editTask(task.id));
-                    
+                    return;
+                }
+                
+                // Render pending tasks
+                pendingTasks.forEach((task) => {
+                    const taskItem = createTaskElement(task);
                     taskList.appendChild(taskItem);
                 });
                 
+                // Render completed tasks if any
+                if (completedTasks.length > 0) {
+                    const completedHeader = document.createElement('h3');
+                    completedHeader.className = 'section-title';
+                    completedHeader.innerHTML = '<i class="fas fa-check-circle"></i> Completed';
+                    taskList.appendChild(completedHeader);
+                    
+                    completedTasks.forEach((task) => {
+                        const taskItem = createTaskElement(task);
+                        taskList.appendChild(taskItem);
+                    });
+                }
+                
                 // Update AI suggestion
                 updateAISuggestion();
+            }
+            
+            // Create task element
+            function createTaskElement(task) {
+                const taskItem = document.createElement('div');
+                taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
+                taskItem.dataset.id = task.id;
+                
+                const taskDateObj = new Date(task.date);
+                const formattedDate = taskDateObj.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+                
+                taskItem.innerHTML = `
+                    <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
+                    <div class="task-content">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-datetime">${formattedDate} at ${task.time}</div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="task-action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                        <button class="task-action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                
+                // Add event listeners
+                const checkbox = taskItem.querySelector('.task-checkbox');
+                checkbox.addEventListener('change', () => toggleTaskCompleted(task.id));
+                
+                const deleteBtn = taskItem.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', () => deleteTask(task.id));
+                
+                const editBtn = taskItem.querySelector('.edit-btn');
+                editBtn.addEventListener('click', () => editTask(task.id));
+                
+                return taskItem;
             }
             
             // Add new task
@@ -848,6 +1010,7 @@
                 saveTasks();
                 renderTasks();
                 updateStats();
+                updateCalendar();
                 
                 taskInput.value = '';
                 showNotification('Task added successfully!');
@@ -864,6 +1027,7 @@
                     saveTasks();
                     renderTasks();
                     updateStats();
+                    updateCalendar();
                     
                     if (tasks[taskIndex].completed) {
                         showNotification('Task completed!');
@@ -877,6 +1041,7 @@
                 saveTasks();
                 renderTasks();
                 updateStats();
+                updateCalendar();
                 showNotification('Task deleted');
             }
             
@@ -893,6 +1058,7 @@
                     saveTasks();
                     renderTasks();
                     updateStats();
+                    updateCalendar();
                     
                     showNotification('Edit your task below');
                 }
@@ -941,7 +1107,7 @@
                         setTimeout(() => {
                             new Notification('Mytodo Diary Reminder', {
                                 body: `Reminder: ${task.title}`,
-                                icon: 'https://example.com/icon.png' // In a real app, use a real URL
+                                icon: 'https://example.com/icon.png'
                             });
                             
                             showNotification(`Reminder: ${task.title}`);
@@ -954,6 +1120,28 @@
                         }
                     });
                 }
+            }
+            
+            // Check for due notifications
+            function checkNotifications() {
+                const now = new Date();
+                const currentTimeString = now.toTimeString().substring(0, 5);
+                const currentDateString = now.toISOString().split('T')[0];
+                
+                tasks.forEach(task => {
+                    if (!task.completed && task.reminder && 
+                        task.date === currentDateString && 
+                        task.time === currentTimeString) {
+                        
+                        if ('Notification' in window && Notification.permission === 'granted') {
+                            new Notification('Mytodo Diary Reminder', {
+                                body: `It's time for: ${task.title}`
+                            });
+                        }
+                        
+                        showNotification(`It's time for: ${task.title}`);
+                    }
+                });
             }
             
             // Update AI suggestion
@@ -1002,10 +1190,13 @@
                 const today = new Date().toISOString().split('T')[0];
                 const overdueTasks = tasks.filter(task => !task.completed && task.date < today).length;
                 
+                const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+                
                 document.getElementById('totalTasks').textContent = totalTasks;
                 document.getElementById('completedTasks').textContent = completedTasks;
                 document.getElementById('pendingTasks').textContent = pendingTasks;
                 document.getElementById('overdueTasks').textContent = overdueTasks;
+                document.getElementById('completionRate').textContent = `${completionRate}%`;
             }
             
             // Setup navigation
@@ -1021,7 +1212,133 @@
                         // Show the corresponding view
                         views.forEach(view => view.classList.remove('view-active'));
                         document.querySelector(`.${viewName}`).classList.add('view-active');
+                        
+                        // Update specific views if needed
+                        if (viewName === 'stats-view') {
+                            updateStats();
+                        } else if (viewName === 'calendar-view') {
+                            updateCalendar();
+                        } else if (viewName === 'reminders-view') {
+                            renderReminders();
+                        }
                     });
+                });
+            }
+            
+            // Initialize calendar
+            function initCalendar() {
+                const prevMonthBtn = document.getElementById('prevMonth');
+                const nextMonthBtn = document.getElementById('nextMonth');
+                
+                let currentMonth = now.getMonth();
+                let currentYear = now.getFullYear();
+                
+                function renderCalendar() {
+                    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                                       'July', 'August', 'September', 'October', 'November', 'December'];
+                    
+                    document.getElementById('currentMonthYear').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+                    
+                    // Get first day of month and number of days
+                    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+                    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                    
+                    // Generate calendar grid
+                    const calendarGrid = document.getElementById('calendarGrid');
+                    calendarGrid.innerHTML = '';
+                    
+                    // Add day headers
+                    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                    dayNames.forEach(day => {
+                        const dayElement = document.createElement('div');
+                        dayElement.className = 'calendar-cell';
+                        dayElement.style.fontWeight = 'bold';
+                        dayElement.textContent = day;
+                        calendarGrid.appendChild(dayElement);
+                    });
+                    
+                    // Add empty cells for days before the first day of the month
+                    for (let i = 0; i < firstDay; i++) {
+                        const emptyCell = document.createElement('div');
+                        emptyCell.className = 'calendar-cell';
+                        calendarGrid.appendChild(emptyCell);
+                    }
+                    
+                    // Add cells for each day of the month
+                    for (let day = 1; day <= daysInMonth; day++) {
+                        const dayElement = document.createElement('div');
+                        dayElement.className = 'calendar-cell';
+                        dayElement.textContent = day;
+                        
+                        // Check if this day has tasks
+                        const dateString = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                        const hasTasks = tasks.some(task => task.date === dateString);
+                        
+                        if (hasTasks) {
+                            dayElement.classList.add('has-tasks');
+                        }
+                        
+                        // Highlight today
+                        const today = new Date();
+                        if (currentYear === today.getFullYear() && 
+                            currentMonth === today.getMonth() && 
+                            day === today.getDate()) {
+                            dayElement.classList.add('today');
+                        }
+                        
+                        calendarGrid.appendChild(dayElement);
+                    }
+                }
+                
+                prevMonthBtn.addEventListener('click', () => {
+                    currentMonth--;
+                    if (currentMonth < 0) {
+                        currentMonth = 11;
+                        currentYear--;
+                    }
+                    renderCalendar();
+                });
+                
+                nextMonthBtn.addEventListener('click', () => {
+                    currentMonth++;
+                    if (currentMonth > 11) {
+                        currentMonth = 0;
+                        currentYear++;
+                    }
+                    renderCalendar();
+                });
+                
+                renderCalendar();
+            }
+            
+            // Update calendar
+            function updateCalendar() {
+                initCalendar(); // Reinitialize calendar to reflect changes
+            }
+            
+            // Render reminders
+            function renderReminders() {
+                const remindersList = document.getElementById('remindersList');
+                remindersList.innerHTML = '';
+                
+                const upcomingTasks = tasks
+                    .filter(task => !task.completed && task.reminder)
+                    .sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time))
+                    .slice(0, 5);
+                
+                if (upcomingTasks.length === 0) {
+                    remindersList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-bell-slash"></i>
+                            <p>No upcoming reminders</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                upcomingTasks.forEach(task => {
+                    const taskItem = createTaskElement(task);
+                    remindersList.appendChild(taskItem);
                 });
             }
             
