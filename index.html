@@ -14,7 +14,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
     <style>
         :root {
-            --primary-color: #6C63FF;
+            --primary-color: #DE3163;
             --secondary-color: #4CAF50;
             --background-color: #f8f9fa;
             --card-color: #ffffff;
@@ -26,7 +26,7 @@
         }
 
         .dark-theme {
-            --primary-color: #8A85FF;
+            --primary-color: #800020;
             --secondary-color: #66BB6A;
             --background-color: #121212;
             --card-color: #1e1e1e;
@@ -35,7 +35,7 @@
         }
 
         .minimal-theme {
-            --primary-color: #FF6B6B;
+            --primary-color: #800020;
             --secondary-color: #4ECDC4;
             --background-color: #F7F9FC;
             --card-color: #ffffff;
@@ -97,7 +97,7 @@
         .logo {
             width: 36px;
             height: 36px;
-            background: linear-gradient(135deg, #6C63FF 0%, #4CAF50 100%);
+            background: linear-gradient(135deg, #800020 0%, #4CAF50 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -596,10 +596,12 @@
 <body>
     <div class="app-container">
         <div class="header">
-            <div class="logo-container">
-                <div class="logo">MD</div>
-                <div class="app-name">Mytodo Diary</div>
+            <div class="logo-container" style="display: flex; align-items: center; gap: 8px;">
+                <img src="218362.png" alt="App Icon" style="width: 32px; height: 32px;">
+                <div class="app-name">Cherry DO</div>
             </div>
+
+           
             <button class="settings-btn" id="settingsBtn">
                 <i class="fas fa-cog"></i>
             </button>
