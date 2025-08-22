@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClearioTask</title>
+    <title>My-Todo Diary</title>
     <style>
         /* CSS Reset & Base Styles */
         :root {
@@ -964,7 +964,7 @@
 
         // Load tasks from localStorage
         function loadTasks() {
-            const savedTasks = localStorage.getItem('clearioTasks');
+            const savedTasks = localStorage.getItem('My-Todo Diary');
             if (savedTasks) {
                 tasks = JSON.parse(savedTasks);
                 renderTaskList();
@@ -973,7 +973,7 @@
 
         // Save tasks to localStorage
         function saveTasks() {
-            localStorage.setItem('clearioTasks', JSON.stringify(tasks));
+            localStorage.setItem('My-Todo Diary', JSON.stringify(tasks));
             updateStats();
         }
 
