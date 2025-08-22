@@ -396,7 +396,7 @@
             background-color: var(--primary-color);
             color: white;
             padding: 12px 20px;
-            borderRadius: 30px;
+            border-radius: 30px;
             box-shadow: var(--shadow);
             z-index: 1000;
             opacity: 0;
@@ -540,6 +540,9 @@
             text-align: center;
             padding: 40px 20px;
             color: #888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .empty-state i {
@@ -856,27 +859,15 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Firebase configuration (replace with your actual Firebase config)
-            // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBg0Q5u5HFcN2-g4pDRfzOlCsi05EqERwM",
-  authDomain: "create-project-bc9f6.firebaseapp.com",
-  projectId: "create-project-bc9f6",
-  storageBucket: "create-project-bc9f6.firebasestorage.app",
-  messagingSenderId: "192418533849",
-  appId: "1:192418533849:web:78cebf94feb3a29c8d09c8",
-  measurementId: "G-K8MQEXZHKP"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+            const firebaseConfig = {
+                apiKey: "AIzaSyBg0Q5u5HFcN2-g4pDRfzOlCsi05EqERwM",
+                authDomain: "create-project-bc9f6.firebaseapp.com",
+                projectId: "create-project-bc9f6",
+                storageBucket: "create-project-bc9f6.firebasestorage.app",
+                messagingSenderId: "192418533849",
+                appId: "1:192418533849:web:78cebf94feb3a29c8d09c8",
+                measurementId: "G-K8MQEXZHKP"
+            };
             
             // Initialize Firebase
             let messaging = null;
@@ -1342,11 +1333,11 @@ const analytics = getAnalytics(app);
                 if (pendingTasks === 0 && completedTasks === 0) {
                     suggestion = 'Add your first task to get started!';
                 } else if (pendingTasks === 0) {
-                    suggestion = 'Great job! You've completed all your tasks.';
+                    suggestion = 'Great job! You\'ve completed all your tasks.';
                 } else if (pendingTasks > 5) {
                     suggestion = 'You have many tasks. Try prioritizing the most important ones.';
                 } else if (completedTasks / (pendingTasks + completedTasks) > 0.7) {
-                    suggestion = 'You're doing great! Keep up the productivity.';
+                    suggestion = 'You\'re doing great! Keep up the productivity.';
                 } else {
                     const suggestions = [
                         'Try tackling the most challenging task first.',
