@@ -6,7 +6,9 @@
     <title>Mytodo Diary</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
     <style>
         :root {
             --primary-color: #6C63FF;
@@ -394,7 +396,7 @@
             background-color: var(--primary-color);
             color: white;
             padding: 12px 20px;
-            border-radius: 30px;
+            borderRadius: 30px;
             box-shadow: var(--shadow);
             z-index: 1000;
             opacity: 0;
@@ -546,6 +548,26 @@
             color: #ddd;
         }
 
+        .cloud-notification-setup {
+            background-color: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #FFC107;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        .setup-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-top: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
         @media (max-width: 480px) {
             .app-name {
                 font-size: 1.2rem;
@@ -593,6 +615,12 @@
                 <div class="ai-suggestion" id="aiSuggestion">
                     <strong><i class="fas fa-robot"></i> AI Suggestion:</strong> 
                     <span id="suggestionText">Try breaking large tasks into smaller, manageable steps.</span>
+                </div>
+                
+                <div class="cloud-notification-setup" id="cloudNotificationSetup">
+                    <strong><i class="fas fa-cloud"></i> Cloud Notifications:</strong> 
+                    <span id="cloudNotificationStatus">Enable cloud notifications to get reminders even when the app is closed</span>
+                    <button class="setup-button" id="enableCloudNotifications">Enable</button>
                 </div>
             </div>
 
@@ -662,6 +690,13 @@
                         <span>Enable Notifications</span>
                         <label class="switch">
                             <input type="checkbox" id="enableNotifications" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>Cloud Notifications</span>
+                        <label class="switch">
+                            <input type="checkbox" id="enableCloudNotificationsToggle">
                             <span class="slider round"></span>
                         </label>
                     </div>
@@ -820,6 +855,28 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Firebase configuration (replace with your actual Firebase config)
+            const firebaseConfig = {
+                apiKey: "YOUR_API_KEY",
+                authDomain: "your-app.firebaseapp.com",
+                projectId: "your-app",
+                storageBucket: "your-app.appspot.com",
+                messagingSenderId: "YOUR_SENDER_ID",
+                appId: "YOUR_APP_ID"
+            };
+            
+            // Initialize Firebase
+            let messaging = null;
+            try {
+                firebase.initializeApp(firebaseConfig);
+                messaging = firebase.messaging();
+                console.log("Firebase initialized successfully");
+            } catch (error) {
+                console.error("Firebase initialization error:", error);
+                document.getElementById('cloudNotificationStatus').textContent = 
+                    "Cloud notifications not available (Firebase config needed)";
+            }
+            
             // DOM Elements
             const taskInput = document.getElementById('taskInput');
             const taskDate = document.getElementById('taskDate');
@@ -835,6 +892,8 @@
             const suggestionText = document.getElementById('suggestionText');
             const navItems = document.querySelectorAll('.nav-item');
             const views = document.querySelectorAll('.main-content > div');
+            const enableCloudBtn = document.getElementById('enableCloudNotifications');
+            const cloudNotificationStatus = document.getElementById('cloudNotificationStatus');
             
             // Set current date
             const now = new Date();
@@ -896,6 +955,92 @@
                 
                 // Check for notifications every minute
                 setInterval(checkNotifications, 60000);
+                
+                // Initialize cloud notifications if available
+                initCloudNotifications();
+            }
+            
+            // Initialize cloud notifications
+            function initCloudNotifications() {
+                if (!messaging) return;
+                
+                // Check if already granted
+                if (localStorage.getItem('fcmToken')) {
+                    cloudNotificationStatus.textContent = "Cloud notifications enabled";
+                    enableCloudBtn.textContent = "Disable";
+                    document.getElementById('enableCloudNotificationsToggle').checked = true;
+                }
+                
+                // Handle received messages
+                messaging.onMessage((payload) => {
+                    console.log('Message received:', payload);
+                    showNotification(payload.notification.body);
+                    
+                    // Also show browser notification if permitted
+                    if (Notification.permission === 'granted') {
+                        new Notification(payload.notification.title, {
+                            body: payload.notification.body,
+                            icon: 'https://example.com/icon.png'
+                        });
+                    }
+                });
+            }
+            
+            // Request cloud notification permission
+            async function requestCloudNotificationPermission() {
+                if (!messaging) {
+                    showNotification("Firebase not configured. Please add your Firebase config.", "error");
+                    return;
+                }
+                
+                try {
+                    // Request permission for notifications
+                    const permission = await Notification.requestPermission();
+                    if (permission === 'granted') {
+                        // Get FCM token
+                        const token = await messaging.getToken({
+                            vapidKey: "YOUR_VAPID_KEY" // Replace with your VAPID key
+                        });
+                        
+                        if (token) {
+                            // Save the token to localStorage
+                            localStorage.setItem('fcmToken', token);
+                            cloudNotificationStatus.textContent = "Cloud notifications enabled";
+                            enableCloudBtn.textContent = "Disable";
+                            document.getElementById('enableCloudNotificationsToggle').checked = true;
+                            showNotification("Cloud notifications enabled!");
+                            
+                            // In a real app, you would send this token to your server
+                            console.log("FCM Token:", token);
+                        } else {
+                            showNotification("Failed to get cloud notification token", "error");
+                        }
+                    } else {
+                        showNotification("Notification permission denied", "error");
+                    }
+                } catch (error) {
+                    console.error("Error getting notification permission:", error);
+                    showNotification("Error enabling cloud notifications", "error");
+                }
+            }
+            
+            // Disable cloud notifications
+            function disableCloudNotifications() {
+                if (!messaging) return;
+                
+                // Delete token
+                messaging.deleteToken()
+                    .then(() => {
+                        localStorage.removeItem('fcmToken');
+                        cloudNotificationStatus.textContent = "Cloud notifications disabled";
+                        enableCloudBtn.textContent = "Enable";
+                        document.getElementById('enableCloudNotificationsToggle').checked = false;
+                        showNotification("Cloud notifications disabled");
+                    })
+                    .catch(error => {
+                        console.error("Error deleting token:", error);
+                        showNotification("Error disabling cloud notifications", "error");
+                    });
             }
             
             // Render tasks
@@ -1018,6 +1163,29 @@
                 
                 // Schedule notification if time is in the future
                 scheduleNotification(newTask);
+                
+                // Schedule cloud notification if enabled
+                if (localStorage.getItem('fcmToken')) {
+                    scheduleCloudNotification(newTask);
+                }
+            }
+            
+            // Schedule cloud notification (simulated - in a real app, this would call your server)
+            function scheduleCloudNotification(task) {
+                // In a real application, you would:
+                // 1. Send the task details and FCM token to your server
+                // 2. The server would schedule a push notification at the specified time
+                // 3. The server would send the notification via FCM
+                
+                console.log("Scheduling cloud notification for:", task);
+                
+                // This is just a simulation - in reality, this would be handled by your backend
+                const taskDateTime = new Date(`${task.date}T${task.time}`);
+                const now = new Date();
+                
+                if (taskDateTime > now) {
+                    showNotification("Cloud notification scheduled for your task");
+                }
             }
             
             // Toggle task completed status
@@ -1161,11 +1329,11 @@
                 if (pendingTasks === 0 && completedTasks === 0) {
                     suggestion = 'Add your first task to get started!';
                 } else if (pendingTasks === 0) {
-                    suggestion = 'Great job! You\'ve completed all your tasks.';
+                    suggestion = 'Great job! You've completed all your tasks.';
                 } else if (pendingTasks > 5) {
                     suggestion = 'You have many tasks. Try prioritizing the most important ones.';
                 } else if (completedTasks / (pendingTasks + completedTasks) > 0.7) {
-                    suggestion = 'You\'re doing great! Keep up the productivity.';
+                    suggestion = 'You're doing great! Keep up the productivity.';
                 } else {
                     const suggestions = [
                         'Try tackling the most challenging task first.',
@@ -1373,10 +1541,12 @@
                 const notificationsEnabled = localStorage.getItem('notifications') !== 'false';
                 const aiEnabled = localStorage.getItem('ai') !== 'false';
                 const vibrationEnabled = localStorage.getItem('vibration') !== 'false';
+                const cloudEnabled = localStorage.getItem('fcmToken') !== null;
                 
                 document.getElementById('notificationsToggle').checked = notificationsEnabled;
                 document.getElementById('aiToggle').checked = aiEnabled;
                 document.getElementById('vibrationToggle').checked = vibrationEnabled;
+                document.getElementById('enableCloudNotificationsToggle').checked = cloudEnabled;
             }
             
             // Event Listeners
@@ -1394,6 +1564,24 @@
             
             closeModal.addEventListener('click', () => {
                 settingsModal.classList.remove('active');
+            });
+            
+            // Cloud notification button
+            enableCloudBtn.addEventListener('click', () => {
+                if (localStorage.getItem('fcmToken')) {
+                    disableCloudNotifications();
+                } else {
+                    requestCloudNotificationPermission();
+                }
+            });
+            
+            // Cloud notification toggle
+            document.getElementById('enableCloudNotificationsToggle').addEventListener('change', function() {
+                if (this.checked) {
+                    requestCloudNotificationPermission();
+                } else {
+                    disableCloudNotifications();
+                }
             });
             
             // Theme switching
